@@ -1,12 +1,13 @@
 import { createContext, useEffect, useState } from 'react';
 import { Worker } from '../model/Domain';
 import axios from 'axios';
+import { NewWorker } from '../manager/worker/NewWorker';
 
 interface WorkerContextInterface {
     workerPage: Worker[];
     getAllWorkers: () => Promise<Worker[]>;
     getPageWorkers: (page: number, size: number, sort: string) => Promise<void>;
-    newWorker: (worker: Worker) => Promise<void>;
+    newWorker: (worker: NewWorker) => Promise<void>;
     updateWorker: (worker: Worker) => Promise<void>;
     deleteWorker: (id: number) => Promise<void>;
 }
@@ -34,7 +35,7 @@ export const WorkerProvider = ({ children }: { children: React.ReactNode }) => {
             });
     };
 
-    const newWorker = async (worker: Worker) => {
+    const newWorker = async (worker: NewWorker) => {
         axios.post('/worker/new', worker).then((response) => {
             return response.data;
         });

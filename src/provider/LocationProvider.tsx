@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import { Location } from '../model/Domain';
 import axios from 'axios';
+import { NewLocation } from '../manager/location/NewLocation';
 
 interface LocationContextInterface {
     locationPage: Location[];
@@ -10,7 +11,7 @@ interface LocationContextInterface {
         size: number,
         sort: string,
     ) => Promise<void>;
-    newLocation: (location: Location) => Promise<void>;
+    newLocation: (location: NewLocation) => Promise<void>;
     updateLocation: (location: Location) => Promise<void>;
     deleteLocation: (id: number) => Promise<void>;
 }
@@ -46,7 +47,7 @@ export const LocationProvider = ({
             });
     };
 
-    const newLocation = async (location: Location) => {
+    const newLocation = async (location: NewLocation) => {
         axios.post('/location/new', location).then((response) => {
             return response.data;
         });

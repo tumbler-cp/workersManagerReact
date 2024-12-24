@@ -1,33 +1,39 @@
 import { FormEvent, useContext, useState } from 'react';
-import { LocationContext } from '../../provider/LocationProvider';
+import { OrganizationContext } from '../../provider/OrganizationProvider';
 
-export type NewLocation = {
-    x: number;
-    y: number;
-    name: string;
+export type NewOrganization = {
+    zipCode: string;
+    annualTurnover: number;
+    employeesCount: number;
+    fullName: string;
+    rating: number;
     editableByAdmin: boolean;
 };
 
-const NewLocationModal = ({ closeBoolSet }: { closeBoolSet: any }) => {
-    const [x, setX] = useState<number>(0);
-    const [y, setY] = useState<number>(0);
-    const [name, setName] = useState<string>('');
+const NewOrganizationModal = ({ closeBoolSet }: { closeBoolSet: any }) => {
+    const [zipCode, setZipCode] = useState<string>('');
+    const [annualTurnover, setAnnualTurnover] = useState<number>(0);
+    const [employeesCount, setEmployeesCount] = useState<number>(0);
+    const [fullName, setFullName] = useState<string>('');
+    const [rating, setRating] = useState<number>(0);
     const [editableByAdmin, setEditableByAdmin] = useState<boolean>(false);
 
-    const locationContext = useContext(LocationContext);
+    const organizationContext = useContext(OrganizationContext);
 
-    if (!locationContext) {
+    if (!organizationContext) {
         return null;
     }
 
-    const { newLocation } = locationContext;
+    const { newOrganization } = organizationContext;
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        newLocation({
-            x,
-            y,
-            name,
+        newOrganization({
+            zipCode,
+            annualTurnover,
+            employeesCount,
+            fullName,
+            rating,
             editableByAdmin,
         }).then(() => {
             closeBoolSet(false);
@@ -38,41 +44,67 @@ const NewLocationModal = ({ closeBoolSet }: { closeBoolSet: any }) => {
         <div className="fixed inset-0 flex bg-black bg-opacity-50">
             <div className="bg-black p-10 mx-auto my-auto border border-gray-500 rounded-lg">
                 <form className="flex flex-col" action="">
-                    <p className="text-xl font-bold">Создать новую локацию</p>
+                    <p className="text-xl font-bold">
+                        Создать новую организацию
+                    </p>
 
-                    <label className="mt-2" htmlFor="x">
-                        X
+                    <label className="mt-2" htmlFor="zipCode">
+                        Почтовый индекс
                     </label>
                     <input
-                        value={x}
-                        onChange={(e) => setX(parseInt(e.target.value))}
-                        name="x"
-                        className="authput"
-                        type="number"
-                    />
-
-                    <label className="mt-2" htmlFor="y">
-                        Y
-                    </label>
-                    <input
-                        value={y}
-                        onChange={(e) => setY(parseInt(e.target.value))}
-                        name="y"
-                        className="authput"
-                        type="number"
-                    />
-
-                    <label className="mt-2" htmlFor="name">
-                        Название
-                    </label>
-                    <input
-                        value={name}
-                        onChange={(e) => {
-                            setName(e.target.value);
-                        }}
-                        name="name"
+                        value={zipCode}
+                        onChange={(e) => setZipCode(e.target.value)}
+                        name="zipCode"
                         className="authput"
                         type="text"
+                    />
+
+                    <label className="mt-2" htmlFor="annualTurnover">
+                        Годовой оборот
+                    </label>
+                    <input
+                        value={annualTurnover}
+                        onChange={(e) =>
+                            setAnnualTurnover(parseFloat(e.target.value))
+                        }
+                        name="annualTurnover"
+                        className="authput"
+                        type="number"
+                    />
+
+                    <label className="mt-2" htmlFor="employeesCount">
+                        Количество сотрудников
+                    </label>
+                    <input
+                        value={employeesCount}
+                        onChange={(e) =>
+                            setEmployeesCount(parseInt(e.target.value))
+                        }
+                        name="employeesCount"
+                        className="authput"
+                        type="number"
+                    />
+
+                    <label className="mt-2" htmlFor="fullName">
+                        Полное название
+                    </label>
+                    <input
+                        value={fullName}
+                        onChange={(e) => setFullName(e.target.value)}
+                        name="fullName"
+                        className="authput"
+                        type="text"
+                    />
+
+                    <label className="mt-2" htmlFor="rating">
+                        Рейтинг
+                    </label>
+                    <input
+                        value={rating}
+                        onChange={(e) => setRating(parseFloat(e.target.value))}
+                        name="rating"
+                        className="authput"
+                        type="number"
                     />
 
                     <label
@@ -120,4 +152,4 @@ const NewLocationModal = ({ closeBoolSet }: { closeBoolSet: any }) => {
     );
 };
 
-export default NewLocationModal;
+export default NewOrganizationModal;

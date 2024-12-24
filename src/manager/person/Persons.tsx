@@ -2,18 +2,24 @@ import { useContext, useEffect, useState } from 'react';
 import { Person } from '../../model/Domain';
 import { PersonContext } from '../../provider/PersonProvider';
 import { AuthContext } from '../../provider/AuthProvider';
+import NewPersonModal from './NewPerson';
+import UpdatePersonModal from './UpdatePerson';
 
 const Table = ({
     data,
     onRowClick,
+    onUpdateRowClick,
     user_id,
+    setSaveModalBool,
 }: {
     data: Person[];
     onRowClick?: (row: Person) => void;
+    onUpdateRowClick?: (row: Person) => void;
     user_id: number;
+    setSaveModalBool?: any;
 }) => {
     return (
-        <table className="mx-auto my-auto">
+        <table className="mx-auto my-10 border-collapse">
             <thead>
                 <tr>
                     <th>id</th>
@@ -29,11 +35,12 @@ const Table = ({
                 {data.map((item) => (
                     <tr
                         key={item.id}
-                        onClick={() =>
-                            user_id == item.ownerId &&
-                            onRowClick &&
-                            onRowClick(item)
-                        }
+                        onClick={() => {
+                            if (user_id == item.ownerId) {
+                                if (onRowClick) onRowClick(item);
+                                if (onUpdateRowClick) onUpdateRowClick(item);
+                            }
+                        }}
                         className={
                             user_id == item.ownerId
                                 ? 'hover:bg-white text-white hover:text-black'
@@ -49,17 +56,32 @@ const Table = ({
                         <td>{item.passportID}</td>
                     </tr>
                 ))}
+                <tr
+                    onClick={() => {
+                        setSaveModalBool(true);
+                    }}
+                >
+                    <td colSpan={7} className="hover:bg-white hover:text-black">
+                        +
+                    </td>
+                </tr>
             </tbody>
         </table>
     );
 };
 
 const Persons = () => {
+    document.title = 'Люди';
+
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(5);
     const [sort, setSort] = useState('id,asc');
-    const [ascending, setAscending] = useState(true);
+    const [ascending, setAscending] = useState(false);
     const [content, setContent] = useState<Person[]>([]);
+
+    const [newPersonModal, setNewPersonModal] = useState<boolean>(false);
+    const [updPersonModal, setUpdPersonModal] = useState<boolean>(false);
+    const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
 
     const personKeys = [
         'id',
@@ -86,12 +108,17 @@ const Persons = () => {
     }
 
     useEffect(() => {
+        setContent(personPage);
+        console.log(personPage);
+    }, [personPage]);
+
+    useEffect(() => {
         if (user) {
             getPagePersons(page, size, sort).then(() => {
                 setContent(personPage);
             });
         }
-    }, [page, size, sort, user, getPagePersons]);
+    }, [page, size, sort, user, ascending]);
 
     const updateSort = (key?: string) => {
         const k = key ? key : sort.split(',')[0];
@@ -99,12 +126,15 @@ const Persons = () => {
         setSort(`${k},${a}`);
     };
 
+    const handleUpdateRowClick = (person: Person) => {
+        setSelectedPerson(person);
+        setUpdPersonModal(true);
+    };
+
     return (
         <div className="flex flex-col mx-auto my-auto">
             <div className="flex flex-col mx-auto my-auto items-center">
-                <h1 className="text-3xl font-bold text-center my-3">
-                    Личности
-                </h1>
+                <h1 className="text-3xl font-bold text-center my-3">Люди</h1>
                 <label className="mt-2" htmlFor="page">
                     Страница
                 </label>
@@ -163,7 +193,21 @@ const Persons = () => {
                         setSize(newSize);
                     }}
                 />
-                <Table data={content} user_id={user.id} />
+                <Table
+                    data={content}
+                    user_id={user.id}
+                    setSaveModalBool={setNewPersonModal}
+                    onUpdateRowClick={handleUpdateRowClick}
+                />
+                {newPersonModal && (
+                    <NewPersonModal closeBoolSet={setNewPersonModal} />
+                )}
+                {updPersonModal && selectedPerson && (
+                    <UpdatePersonModal
+                        person={selectedPerson}
+                        closeBoolSet={setUpdPersonModal}
+                    />
+                )}
             </div>
         </div>
     );

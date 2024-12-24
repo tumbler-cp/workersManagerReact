@@ -1,12 +1,13 @@
 import { createContext, useEffect, useState } from 'react';
 import { Person } from '../model/Domain';
 import axios from 'axios';
+import { NewPerson } from '../manager/person/NewPerson';
 
 interface PersonContextInterface {
     personPage: Person[];
     getAllPersons: () => Promise<Person[]>;
     getPagePersons: (page: number, size: number, sort: string) => Promise<void>;
-    newPerson: (person: Person) => Promise<void>;
+    newPerson: (person: NewPerson) => Promise<void>;
     updatePerson: (person: Person) => Promise<void>;
     deletePerson: (id: number) => Promise<void>;
 }
@@ -34,7 +35,7 @@ export const PersonProvider = ({ children }: { children: React.ReactNode }) => {
             });
     };
 
-    const newPerson = async (person: Person) => {
+    const newPerson = async (person: NewPerson) => {
         axios.post('/person/new', person).then((response) => {
             return response.data;
         });

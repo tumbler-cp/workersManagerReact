@@ -1,25 +1,30 @@
 import { useContext, useEffect, useState } from 'react';
 import { Worker } from '../../model/Domain';
-import { AuthContext } from '../../provider/AuthProvider';
 import { WorkerContext } from '../../provider/WorkerProvider';
+import { AuthContext } from '../../provider/AuthProvider';
+import NewWorkerModal from './NewWorker';
+import UpdateWorkerModal from './UpdateWorker';
 
 const Table = ({
     data,
     onRowClick,
+    onUpdateRowClick,
     user_id,
+    setSaveModalBool,
 }: {
     data: Worker[];
     onRowClick?: (row: Worker) => void;
+    onUpdateRowClick?: (row: Worker) => void;
     user_id: number;
+    setSaveModalBool?: any;
 }) => {
     return (
-        <table className="mx-auto my-auto">
+        <table className="mx-auto my-10 border-collapse">
             <thead>
                 <tr>
                     <th>id</th>
                     <th>name</th>
-                    <th>x</th>
-                    <th>y</th>
+                    <th>coordinates</th>
                     <th>creationDate</th>
                     <th>organizationId</th>
                     <th>salary</th>
@@ -33,11 +38,12 @@ const Table = ({
                 {data.map((item) => (
                     <tr
                         key={item.id}
-                        onClick={() =>
-                            user_id == item.ownerId &&
-                            onRowClick &&
-                            onRowClick(item)
-                        }
+                        onClick={() => {
+                            if (user_id == item.ownerId) {
+                                if (onRowClick) onRowClick(item);
+                                if (onUpdateRowClick) onUpdateRowClick(item);
+                            }
+                        }}
                         className={
                             user_id == item.ownerId
                                 ? 'hover:bg-white text-white hover:text-black'
@@ -46,8 +52,7 @@ const Table = ({
                     >
                         <td>{item.id}</td>
                         <td>{item.name}</td>
-                        <td>{item.coordinates.x}</td>
-                        <td>{item.coordinates.y}</td>
+                        <td>{`(${item.coordinates.x}, ${item.coordinates.y})`}</td>
                         <td>{item.creationDate}</td>
                         <td>{item.organizationId}</td>
                         <td>{item.salary}</td>
@@ -57,26 +62,47 @@ const Table = ({
                         <td>{item.personId}</td>
                     </tr>
                 ))}
+                <tr
+                    onClick={() => {
+                        setSaveModalBool(true);
+                    }}
+                >
+                    <td
+                        colSpan={10}
+                        className="hover:bg-white hover:text-black"
+                    >
+                        +
+                    </td>
+                </tr>
             </tbody>
         </table>
     );
 };
 
 const Workers = () => {
+    document.title = 'Работники';
+
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(5);
     const [sort, setSort] = useState('id,asc');
-    const [ascending, setAscending] = useState(true);
+    const [ascending, setAscending] = useState(false);
     const [content, setContent] = useState<Worker[]>([]);
+
+    const [newWorkerModal, setNewWorkerModal] = useState<boolean>(false);
+    const [updWorkerModal, setUpdWorkerModal] = useState<boolean>(false);
+    const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
 
     const workerKeys = [
         'id',
-        'eyeColor',
-        'hairColor',
-        'locationId',
-        'height',
-        'weight',
-        'passportID',
+        'name',
+        'coordinates',
+        'creationDate',
+        'organizationId',
+        'salary',
+        'rating',
+        'position',
+        'status',
+        'personId',
     ];
 
     const workerContext = useContext(WorkerContext);
@@ -94,12 +120,17 @@ const Workers = () => {
     }
 
     useEffect(() => {
+        setContent(workerPage);
+        console.log(workerPage);
+    }, [workerPage]);
+
+    useEffect(() => {
         if (user) {
             getPageWorkers(page, size, sort).then(() => {
                 setContent(workerPage);
             });
         }
-    }, [page, size, sort, user, getPageWorkers]);
+    }, [page, size, sort, user, ascending]);
 
     const updateSort = (key?: string) => {
         const k = key ? key : sort.split(',')[0];
@@ -107,11 +138,16 @@ const Workers = () => {
         setSort(`${k},${a}`);
     };
 
+    const handleUpdateRowClick = (worker: Worker) => {
+        setSelectedWorker(worker);
+        setUpdWorkerModal(true);
+    };
+
     return (
         <div className="flex flex-col mx-auto my-auto">
             <div className="flex flex-col mx-auto my-auto items-center">
                 <h1 className="text-3xl font-bold text-center my-3">
-                    Сотрудники
+                    Работники
                 </h1>
                 <label className="mt-2" htmlFor="page">
                     Страница
@@ -171,7 +207,21 @@ const Workers = () => {
                         setSize(newSize);
                     }}
                 />
-                <Table data={content} user_id={user.id} />
+                <Table
+                    data={content}
+                    user_id={user.id}
+                    setSaveModalBool={setNewWorkerModal}
+                    onUpdateRowClick={handleUpdateRowClick}
+                />
+                {newWorkerModal && (
+                    <NewWorkerModal closeBoolSet={setNewWorkerModal} />
+                )}
+                {updWorkerModal && selectedWorker && (
+                    <UpdateWorkerModal
+                        worker={selectedWorker}
+                        closeBoolSet={setUpdWorkerModal}
+                    />
+                )}
             </div>
         </div>
     );

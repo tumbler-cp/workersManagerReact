@@ -2,18 +2,24 @@ import { useContext, useEffect, useState } from 'react';
 import { Location } from '../../model/Domain';
 import { LocationContext } from '../../provider/LocationProvider';
 import { AuthContext } from '../../provider/AuthProvider';
+import NewLocationModal from './NewLocation';
+import UpdateLocationModal from './UpdateLocation';
 
 const Table = ({
     data,
     onRowClick,
+    onUpdateRowClick,
     user_id,
+    setSaveModalBool,
 }: {
     data: Location[];
     onRowClick?: (row: Location) => void;
+    onUpdateRowClick?: (row: Location) => void;
     user_id: number;
+    setSaveModalBool?: any;
 }) => {
     return (
-        <table className="mx-auto my-auto">
+        <table className="mx-auto my-10 border-collapse">
             <thead>
                 <tr>
                     <th>id</th>
@@ -26,11 +32,12 @@ const Table = ({
                 {data.map((item) => (
                     <tr
                         key={item.id}
-                        onClick={() =>
-                            user_id == item.ownerId &&
-                            onRowClick &&
-                            onRowClick(item)
-                        }
+                        onClick={() => {
+                            if (user_id == item.ownerId) {
+                                if (onRowClick) onRowClick(item);
+                                if (onUpdateRowClick) onUpdateRowClick(item);
+                            }
+                        }}
                         className={
                             user_id == item.ownerId
                                 ? 'hover:bg-white text-white hover:text-black'
@@ -43,17 +50,34 @@ const Table = ({
                         <td>{item.name}</td>
                     </tr>
                 ))}
+                <tr
+                    onClick={() => {
+                        setSaveModalBool(true);
+                    }}
+                >
+                    <td colSpan={4} className="hover:bg-white hover:text-black">
+                        +
+                    </td>
+                </tr>
             </tbody>
         </table>
     );
 };
 
 const Locations = () => {
+    document.title = 'Локации';
+
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(5);
     const [sort, setSort] = useState('id,asc');
-    const [ascending, setAscending] = useState(true);
+    const [ascending, setAscending] = useState(false);
     const [content, setContent] = useState<Location[]>([]);
+
+    const [newLocationModal, setNewLocationModal] = useState<boolean>(false);
+    const [updaLocationModal, setUpdLocationModal] = useState<boolean>(false);
+    const [selectedLocation, setSelectedLocation] = useState<Location | null>(
+        null,
+    );
 
     const locationKeys = ['id', 'x', 'y', 'name'];
 
@@ -72,17 +96,26 @@ const Locations = () => {
     }
 
     useEffect(() => {
+        setContent(locationPage);
+    }, [locationPage]);
+
+    useEffect(() => {
         if (user) {
             getPageLocations(page, size, sort).then(() => {
                 setContent(locationPage);
             });
         }
-    }, [page, size, sort, user, getPageLocations]);
+    }, [page, size, sort, user, ascending]);
 
     const updateSort = (key?: string) => {
         const k = key ? key : sort.split(',')[0];
         const a = ascending ? 'asc' : 'desc';
         setSort(`${k},${a}`);
+    };
+
+    const handleUpdateRowClick = (location: Location) => {
+        setSelectedLocation(location);
+        setUpdLocationModal(true);
     };
 
     return (
@@ -147,7 +180,21 @@ const Locations = () => {
                         setSize(newSize);
                     }}
                 />
-                <Table data={content} user_id={user.id} />
+                <Table
+                    data={content}
+                    user_id={user.id}
+                    setSaveModalBool={setNewLocationModal}
+                    onUpdateRowClick={handleUpdateRowClick}
+                />
+                {newLocationModal && (
+                    <NewLocationModal closeBoolSet={setNewLocationModal} />
+                )}
+                {updaLocationModal && selectedLocation && (
+                    <UpdateLocationModal
+                        location={selectedLocation}
+                        closeBoolSet={setUpdLocationModal}
+                    />
+                )}
             </div>
         </div>
     );

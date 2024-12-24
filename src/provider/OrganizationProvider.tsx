@@ -1,6 +1,7 @@
 import { createContext, useEffect, useState } from 'react';
 import { Organization } from '../model/Domain';
 import axios from 'axios';
+import { NewOrganization } from '../manager/organization/NewOrganization';
 
 interface OrganizationContextInterface {
     organizationPage: Organization[];
@@ -10,7 +11,7 @@ interface OrganizationContextInterface {
         size: number,
         sort: string,
     ) => Promise<void>;
-    newOrganization: (organization: Organization) => Promise<void>;
+    newOrganization: (organization: NewOrganization) => Promise<void>;
     updateOrganization: (organization: Organization) => Promise<void>;
     deleteOrganization: (id: number) => Promise<void>;
 }
@@ -50,7 +51,7 @@ export const OrganizationProvider = ({
             });
     };
 
-    const newOrganization = async (organization: Organization) => {
+    const newOrganization = async (organization: NewOrganization) => {
         axios.post('/organization/new', organization).then((response) => {
             return response.data;
         });

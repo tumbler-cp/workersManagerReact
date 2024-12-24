@@ -2,18 +2,24 @@ import { useContext, useEffect, useState } from 'react';
 import { Organization } from '../../model/Domain';
 import { OrganizationContext } from '../../provider/OrganizationProvider';
 import { AuthContext } from '../../provider/AuthProvider';
+import NewOrganizationModal from './NewOrganization';
+import UpdateOrganizationModal from './UpdateOrganization';
 
 const Table = ({
     data,
     onRowClick,
+    onUpdateRowClick,
     user_id,
+    setSaveModalBool,
 }: {
     data: Organization[];
     onRowClick?: (row: Organization) => void;
+    onUpdateRowClick?: (row: Organization) => void;
     user_id: number;
+    setSaveModalBool?: any;
 }) => {
     return (
-        <table className="mx-auto my-auto">
+        <table className="mx-auto my-10 border-collapse">
             <thead>
                 <tr>
                     <th>id</th>
@@ -28,11 +34,12 @@ const Table = ({
                 {data.map((item) => (
                     <tr
                         key={item.id}
-                        onClick={() =>
-                            user_id == item.ownerId &&
-                            onRowClick &&
-                            onRowClick(item)
-                        }
+                        onClick={() => {
+                            if (user_id == item.ownerId) {
+                                if (onRowClick) onRowClick(item);
+                                if (onUpdateRowClick) onUpdateRowClick(item);
+                            }
+                        }}
                         className={
                             user_id == item.ownerId
                                 ? 'hover:bg-white text-white hover:text-black'
@@ -47,17 +54,35 @@ const Table = ({
                         <td>{item.rating}</td>
                     </tr>
                 ))}
+                <tr
+                    onClick={() => {
+                        setSaveModalBool(true);
+                    }}
+                >
+                    <td colSpan={6} className="hover:bg-white hover:text-black">
+                        +
+                    </td>
+                </tr>
             </tbody>
         </table>
     );
 };
 
 const Organizations = () => {
+    document.title = 'Организации';
+
     const [page, setPage] = useState(0);
     const [size, setSize] = useState(5);
     const [sort, setSort] = useState('id,asc');
-    const [ascending, setAscending] = useState(true);
+    const [ascending, setAscending] = useState(false);
     const [content, setContent] = useState<Organization[]>([]);
+
+    const [newOrganizationModal, setNewOrganizationModal] =
+        useState<boolean>(false);
+    const [updaOrganizationModal, setUpdOrganizationModal] =
+        useState<boolean>(false);
+    const [selectedOrganization, setSelectedOrganization] =
+        useState<Organization | null>(null);
 
     const organizationKeys = [
         'id',
@@ -83,17 +108,27 @@ const Organizations = () => {
     }
 
     useEffect(() => {
+        setContent(organizationPage);
+        console.log(organizationPage);
+    }, [organizationPage]);
+
+    useEffect(() => {
         if (user) {
             getPageOrganizations(page, size, sort).then(() => {
                 setContent(organizationPage);
             });
         }
-    }, [page, size, sort, user, getPageOrganizations]);
+    }, [page, size, sort, user, ascending]);
 
     const updateSort = (key?: string) => {
         const k = key ? key : sort.split(',')[0];
         const a = ascending ? 'asc' : 'desc';
         setSort(`${k},${a}`);
+    };
+
+    const handleUpdateRowClick = (organization: Organization) => {
+        setSelectedOrganization(organization);
+        setUpdOrganizationModal(true);
     };
 
     return (
@@ -160,7 +195,23 @@ const Organizations = () => {
                         setSize(newSize);
                     }}
                 />
-                <Table data={content} user_id={user.id} />
+                <Table
+                    data={content}
+                    user_id={user.id}
+                    setSaveModalBool={setNewOrganizationModal}
+                    onUpdateRowClick={handleUpdateRowClick}
+                />
+                {newOrganizationModal && (
+                    <NewOrganizationModal
+                        closeBoolSet={setNewOrganizationModal}
+                    />
+                )}
+                {updaOrganizationModal && selectedOrganization && (
+                    <UpdateOrganizationModal
+                        organization={selectedOrganization}
+                        closeBoolSet={setUpdOrganizationModal}
+                    />
+                )}
             </div>
         </div>
     );

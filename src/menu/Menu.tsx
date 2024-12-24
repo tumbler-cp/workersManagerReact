@@ -13,7 +13,7 @@ const Menu = () => {
 
     return (
         <nav>
-            <ul className="flex flex-row py-5 px-5 border-b border-white">
+            <ul className="flex flex-row py-5 px-5 border-b border-gray-700">
                 {menuItems.map((item) => (
                     <li key={item.path} className="m-4">
                         <Link
