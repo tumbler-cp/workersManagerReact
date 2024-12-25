@@ -4,6 +4,8 @@ import { PersonContext } from '../../provider/PersonProvider';
 import { AuthContext } from '../../provider/AuthProvider';
 import NewPersonModal from './NewPerson';
 import UpdatePersonModal from './UpdatePerson';
+import TextSocket from '../../websocket/TextSocket';
+import { AppEvent } from '../../model/App';
 
 const Table = ({
     data,
@@ -107,6 +109,24 @@ const Persons = () => {
         return null;
     }
 
+    const [textSocket] = useState<TextSocket>(new TextSocket());
+
+    const onMsg = (message: string) => {
+        const event: AppEvent = JSON.parse(message);
+        if (event.object == 'Person') {
+            getPagePersons(page, size, sort).then(() => {
+                setContent(personPage);
+            });
+        }
+    };
+
+    useEffect(() => {
+        textSocket.connect('ws://localhost:8080/websocket', onMsg);
+        return () => {
+            textSocket.disconnect();
+        };
+    }, [textSocket]);
+
     useEffect(() => {
         setContent(personPage);
         console.log(personPage);
@@ -127,7 +147,7 @@ const Persons = () => {
     };
 
     const handleUpdateRowClick = (person: Person) => {
-        setSelectedPerson(person);
+        setSelectedPerson({ ...person });
         setUpdPersonModal(true);
     };
 

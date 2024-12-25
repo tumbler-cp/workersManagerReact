@@ -5,6 +5,7 @@ import Locations from './manager/location/Locations';
 import Organizations from './manager/organization/Organizations';
 import Persons from './manager/person/Persons';
 import Workers from './manager/worker/Workers';
+import Home from './util/Home';
 
 const App = () => {
     useEffect(() => {
@@ -14,12 +15,9 @@ const App = () => {
     return (
         <div className="min-h-screen min-w-max bg-black flex flex-col text-white">
             <Menu />
-            <div className="flex-grow">
+            <div className="flex-grow flex">
                 <Routes>
-                    <Route
-                        path="/"
-                        element={<div className="text-white">Главная</div>}
-                    />
+                    <Route path="/" element={<Home />} />
                     <Route path="/locations" element={<Locations />} />
                     <Route path="/persons" element={<Persons />} />
                     <Route path="/organizations" element={<Organizations />} />

@@ -4,6 +4,8 @@ import { OrganizationContext } from '../../provider/OrganizationProvider';
 import { AuthContext } from '../../provider/AuthProvider';
 import NewOrganizationModal from './NewOrganization';
 import UpdateOrganizationModal from './UpdateOrganization';
+import TextSocket from '../../websocket/TextSocket';
+import { AppEvent } from '../../model/App';
 
 const Table = ({
     data,
@@ -106,6 +108,24 @@ const Organizations = () => {
     if (!user) {
         return null;
     }
+
+    const [textSocket] = useState<TextSocket>(new TextSocket());
+
+    const onMsg = (message: string) => {
+        const event: AppEvent = JSON.parse(message);
+        if (event.object == 'Organization') {
+            getPageOrganizations(page, size, sort).then(() => {
+                setContent(organizationPage);
+            });
+        }
+    };
+
+    useEffect(() => {
+        textSocket.connect('ws://localhost:8080/websocket', onMsg);
+        return () => {
+            textSocket.disconnect();
+        };
+    }, [textSocket]);
 
     useEffect(() => {
         setContent(organizationPage);

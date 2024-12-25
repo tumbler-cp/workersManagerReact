@@ -4,6 +4,8 @@ import { WorkerContext } from '../../provider/WorkerProvider';
 import { AuthContext } from '../../provider/AuthProvider';
 import NewWorkerModal from './NewWorker';
 import UpdateWorkerModal from './UpdateWorker';
+import TextSocket from '../../websocket/TextSocket';
+import { AppEvent } from '../../model/App';
 
 const Table = ({
     data,
@@ -118,6 +120,24 @@ const Workers = () => {
     if (!user) {
         return null;
     }
+
+    const [textSocket] = useState<TextSocket>(new TextSocket());
+
+    const onMsg = (message: string) => {
+        const event: AppEvent = JSON.parse(message);
+        if (event.object == 'Worker') {
+            getPageWorkers(page, size, sort).then(() => {
+                setContent(workerPage);
+            });
+        }
+    };
+
+    useEffect(() => {
+        textSocket.connect('ws://localhost:8080/websocket', onMsg);
+        return () => {
+            textSocket.disconnect();
+        };
+    }, [textSocket]);
 
     useEffect(() => {
         setContent(workerPage);

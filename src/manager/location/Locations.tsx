@@ -1,9 +1,11 @@
 import { useContext, useEffect, useState } from 'react';
+import { AppEvent } from '../../model/App';
 import { Location } from '../../model/Domain';
 import { LocationContext } from '../../provider/LocationProvider';
 import { AuthContext } from '../../provider/AuthProvider';
 import NewLocationModal from './NewLocation';
 import UpdateLocationModal from './UpdateLocation';
+import TextSocket from '../../websocket/TextSocket';
 
 const Table = ({
     data,
@@ -94,6 +96,24 @@ const Locations = () => {
     if (!user) {
         return null;
     }
+
+    const [textSocket] = useState<TextSocket>(new TextSocket());
+
+    const onMsg = (message: string) => {
+        const event: AppEvent = JSON.parse(message);
+        if (event.object == 'Location') {
+            getPageLocations(page, size, sort).then(() => {
+                setContent(locationPage);
+            });
+        }
+    };
+
+    useEffect(() => {
+        textSocket.connect('ws://localhost:8080/websocket', onMsg);
+        return () => {
+            textSocket.disconnect();
+        };
+    }, [textSocket]);
 
     useEffect(() => {
         setContent(locationPage);
