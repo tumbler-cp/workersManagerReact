@@ -29,3 +29,7 @@
         @apply border border-gray-700 px-8 py-2 text-center;
     }
 }
+
+body {
+    background: black;
+}

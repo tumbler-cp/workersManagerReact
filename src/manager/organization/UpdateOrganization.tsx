@@ -16,11 +16,17 @@ const UpdateOrganizationModal = ({
         return null;
     }
 
-    const { updateOrganization } = organizationContext;
+    const { updateOrganization, deleteOrganization } = organizationContext;
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         updateOrganization(obj).then(() => {
+            closeBoolSet(false);
+        });
+    };
+
+    const handleDelete = () => {
+        deleteOrganization(obj.id).then(() => {
             closeBoolSet(false);
         });
     };
@@ -56,22 +62,6 @@ const UpdateOrganizationModal = ({
                             })
                         }
                         name="annualTurnover"
-                        className="authput"
-                        type="number"
-                    />
-
-                    <label className="mt-2" htmlFor="employeesCount">
-                        Количество сотрудников
-                    </label>
-                    <input
-                        value={obj.employeesCount}
-                        onChange={(e) =>
-                            setObj({
-                                ...obj,
-                                employeesCount: parseInt(e.target.value),
-                            })
-                        }
-                        name="employeesCount"
                         className="authput"
                         type="number"
                     />
@@ -120,6 +110,15 @@ const UpdateOrganizationModal = ({
                         }}
                     >
                         Отмена
+                    </button>
+                    <button
+                        className="my-4 bg-red-500 text-white"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleDelete();
+                        }}
+                    >
+                        Удалить
                     </button>
                 </form>
             </div>

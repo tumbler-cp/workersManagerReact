@@ -6,18 +6,21 @@ import NewPersonModal from './NewPerson';
 import UpdatePersonModal from './UpdatePerson';
 import TextSocket from '../../websocket/TextSocket';
 import { AppEvent } from '../../model/App';
+import { Role } from '../../model/Auth';
 
 const Table = ({
     data,
     onRowClick,
     onUpdateRowClick,
     user_id,
+    user_role,
     setSaveModalBool,
 }: {
     data: Person[];
     onRowClick?: (row: Person) => void;
     onUpdateRowClick?: (row: Person) => void;
     user_id: number;
+    user_role: Role;
     setSaveModalBool?: any;
 }) => {
     return (
@@ -38,13 +41,13 @@ const Table = ({
                     <tr
                         key={item.id}
                         onClick={() => {
-                            if (user_id == item.ownerId) {
+                            if (user_id == item.ownerId || (item.isEditableByAdmin && user_role == Role.ADMIN)) {
                                 if (onRowClick) onRowClick(item);
                                 if (onUpdateRowClick) onUpdateRowClick(item);
                             }
                         }}
                         className={
-                            user_id == item.ownerId
+                            user_id == item.ownerId || (item.isEditableByAdmin && user_role == Role.ADMIN)
                                 ? 'hover:bg-white text-white hover:text-black'
                                 : 'text-gray-500'
                         }
@@ -216,6 +219,7 @@ const Persons = () => {
                 <Table
                     data={content}
                     user_id={user.id}
+                    user_role={user.role}
                     setSaveModalBool={setNewPersonModal}
                     onUpdateRowClick={handleUpdateRowClick}
                 />

@@ -1,23 +1,23 @@
 export enum Color {
-    GREEN,
-    BLUE,
-    ORANGE,
-    WHITE,
+    GREEN = "GREEN",
+    BLUE = "BLUE",
+    ORANGE = "ORANGE",
+    WHITE = "WHITE",
 }
 
 export enum Position {
-    MANAGER,
-    LABORER,
-    HEAD_OF_DIVISION,
-    LEAD_DEVELOPER,
-    BAKER,
+    MANAGER = "MANAGER",
+    LABORER = "LABORER",
+    HEAD_OF_DIVISION = "HEAD_OF_DIVISION",
+    LEAD_DEVELOPER = "LEAD_DEVELOPER",
+    BAKER = "BAKER",
 }
 
 export enum Status {
-    HIRED,
-    FIRED,
-    RECOMMENDED_FOR_PROMOTION,
-    PROBATION,
+    HIRED = "HIRED",
+    FIRED = "FIRED",
+    RECOMMENDED_FOR_PROMOTION = "RECOMMENDED_FOR_PROMOTION",
+    PROBATION = "PROBATION", 
 }
 
 export type Location = {
@@ -26,6 +26,7 @@ export type Location = {
     y: number;
     name: string;
     ownerId: number;
+    isEditableByAdmin: boolean;
 };
 
 export type Person = {
@@ -35,8 +36,9 @@ export type Person = {
     locationId: number;
     height: number;
     weight: number;
-    passportID: number;
+    passportID: string;
     ownerId: number;
+    isEditableByAdmin: boolean;
 };
 
 export type Organization = {
@@ -47,6 +49,7 @@ export type Organization = {
     fullName: string;
     rating: number;
     ownerId: number;
+    isEditableByAdmin: boolean;
 };
 
 export type Coordinates = {
@@ -66,4 +69,5 @@ export type Worker = {
     status: Status;
     personId: number;
     ownerId: number;
+    isEditableByAdmin: boolean;
 };

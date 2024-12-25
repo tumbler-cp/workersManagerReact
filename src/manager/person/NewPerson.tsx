@@ -45,7 +45,7 @@ const NewPersonModal = ({ closeBoolSet }: { closeBoolSet: any }) => {
     };
 
     return (
-        <div className="fixed inset-0 flex bg-black bg-opacity-50">
+        <div className="fixed inset-0 flex bg-black bg-opacity-50 overflow-auto">
             <div className="bg-black p-10 mx-auto my-auto border border-gray-500 rounded-lg">
                 <form className="flex flex-col" action="">
                     <p className="text-xl font-bold">Создать нового человека</p>

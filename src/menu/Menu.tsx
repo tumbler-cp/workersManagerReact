@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router';
 import { useContext } from 'react';
 import { AuthContext } from '../provider/AuthProvider';
+import { Role } from '../model/Auth';
 
 const Menu = () => {
     const location = useLocation();
@@ -12,6 +13,10 @@ const Menu = () => {
 
     const { user, signout } = authContext;
 
+    if (!user) {
+        return null;
+    }
+
     const menuItems = [
         { path: '/', label: 'Главная' },
         { path: '/locations', label: 'Локации' },
@@ -19,6 +24,10 @@ const Menu = () => {
         { path: '/organizations', label: 'Организации' },
         { path: '/workers', label: 'Сотрудники' },
     ];
+
+    if (user.role as Role == Role.ADMIN) {
+        menuItems.push({ path: '/admin', label: 'Администрирование' });
+    }
 
     return (
         <nav>

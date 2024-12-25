@@ -6,7 +6,7 @@ const UpdatePersonModal = ({
     closeBoolSet,
     person,
 }: {
-    closeBoolSet: any;
+    closeBoolSet: (value: boolean) => void;
     person: Person;
 }) => {
     const [obj, setObj] = useState(person);
@@ -16,19 +16,31 @@ const UpdatePersonModal = ({
         return null;
     }
 
-    const { updatePerson } = personContext;
+    const { updatePerson, deletePerson } = personContext;
 
-    const handleSubmit = (e: FormEvent) => {
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        updatePerson(obj).then(() => {
+        try {
+            await updatePerson(obj);
             closeBoolSet(false);
-        });
+        } catch (error) {
+            console.error('Failed to update person:', error);
+        }
+    };
+
+    const handleDelete = async () => {
+        try {
+            await deletePerson(obj.id);
+            closeBoolSet(false);
+        } catch (error) {
+            console.error('Failed to delete person:', error);
+        }
     };
 
     return (
         <div className="fixed inset-0 flex bg-black bg-opacity-50">
             <div className="bg-black p-10 mx-auto my-auto border border-gray-500 rounded-lg">
-                <form className="flex flex-col" action="">
+                <form className="flex flex-col" onSubmit={handleSubmit}>
                     <p className="text-xl font-bold">
                         Обновить данные человека
                     </p>
@@ -41,19 +53,17 @@ const UpdatePersonModal = ({
                         onChange={(e) =>
                             setObj({
                                 ...obj,
-                                eyeColor: parseInt(e.target.value),
+                                eyeColor: e.target.value as Color,
                             })
                         }
                         name="eyeColor"
                         className="authput"
                     >
-                        {Object.keys(Color)
-                            .filter((key) => isNaN(Number(key)))
-                            .map((color, index) => (
-                                <option key={index} value={index}>
-                                    {color}
-                                </option>
-                            ))}
+                        {Object.values(Color).map((color, index) => (
+                            <option key={index} value={color}>
+                                {color}
+                            </option>
+                        ))}
                     </select>
 
                     <label className="mt-2" htmlFor="hairColor">
@@ -64,19 +74,17 @@ const UpdatePersonModal = ({
                         onChange={(e) =>
                             setObj({
                                 ...obj,
-                                hairColor: parseInt(e.target.value),
+                                hairColor: e.target.value as Color,
                             })
                         }
                         name="hairColor"
                         className="authput"
                     >
-                        {Object.keys(Color)
-                            .filter((key) => isNaN(Number(key)))
-                            .map((color, index) => (
-                                <option key={index} value={index}>
-                                    {color}
-                                </option>
-                            ))}
+                        {Object.values(Color).map((color, index) => (
+                            <option key={index} value={color}>
+                                {color}
+                            </option>
+                        ))}
                     </select>
 
                     <label className="mt-2" htmlFor="height">
@@ -113,7 +121,7 @@ const UpdatePersonModal = ({
                         onChange={(e) =>
                             setObj({
                                 ...obj,
-                                passportID: parseInt(e.target.value),
+                                passportID: e.target.value,
                             })
                         }
                         name="passportID"
@@ -121,21 +129,24 @@ const UpdatePersonModal = ({
                         type="text"
                     />
 
-                    <button
-                        className="my-4"
-                        onClick={(e) => {
-                            handleSubmit(e);
-                        }}
-                    >
+                    <button className="my-4" type="submit">
                         Обновить
                     </button>
                     <button
                         className="my-4"
+                        type="button"
                         onClick={() => {
                             closeBoolSet(false);
                         }}
                     >
                         Отмена
+                    </button>
+                    <button
+                        className="my-4 bg-red-500 text-white"
+                        type="button"
+                        onClick={handleDelete}
+                    >
+                        Удалить
                     </button>
                 </form>
             </div>
