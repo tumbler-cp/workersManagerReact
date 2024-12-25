@@ -16,11 +16,17 @@ const UpdateLocationModal = ({
         return null;
     }
 
-    const { updateLocation } = locationContext;
+    const { updateLocation, deleteLocation } = locationContext;
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
         updateLocation(obj).then(() => {
+            closeBoolSet(false);
+        });
+    };
+
+    const handleDelete = () => {
+        deleteLocation(obj.id).then(() => {
             closeBoolSet(false);
         });
     };
@@ -90,6 +96,15 @@ const UpdateLocationModal = ({
                         }}
                     >
                         Отмена
+                    </button>
+                    <button
+                        className="my-4 bg-red-500 text-white"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            handleDelete();
+                        }}
+                    >
+                        Удалить
                     </button>
                 </form>
             </div>

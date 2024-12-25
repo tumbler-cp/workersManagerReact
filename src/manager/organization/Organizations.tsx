@@ -113,7 +113,7 @@ const Organizations = () => {
 
     const onMsg = (message: string) => {
         const event: AppEvent = JSON.parse(message);
-        if (event.object == 'Organization') {
+        if (event.object == 'Location') {
             getPageOrganizations(page, size, sort).then(() => {
                 setContent(organizationPage);
             });

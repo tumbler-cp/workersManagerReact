@@ -1,7 +1,16 @@
 import { Link, useLocation } from 'react-router';
+import { useContext } from 'react';
+import { AuthContext } from '../provider/AuthProvider';
 
 const Menu = () => {
     const location = useLocation();
+    const authContext = useContext(AuthContext);
+
+    if (!authContext) {
+        return null;
+    }
+
+    const { user, signout } = authContext;
 
     const menuItems = [
         { path: '/', label: 'Главная' },
@@ -15,7 +24,7 @@ const Menu = () => {
         <nav>
             <ul className="flex flex-row py-5 px-5 border-b border-gray-700">
                 {menuItems.map((item) => (
-                    <li key={item.path} className="m-4">
+                    <li key={item.path} className="mx-4 my-auto">
                         <Link
                             to={item.path}
                             className={`
@@ -36,6 +45,16 @@ const Menu = () => {
                         </Link>
                     </li>
                 ))}
+                {user && (
+                    <li className="ml-auto flex items-center m-4">
+                        <span className="text-white pr-10">
+                            {user.username}
+                        </span>
+                        <button className="px-4 py-1" onClick={signout}>
+                            Sign Out
+                        </button>
+                    </li>
+                )}
             </ul>
         </nav>
     );

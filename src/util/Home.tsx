@@ -14,7 +14,7 @@ const Plate = ({
     return (
         <Link
             to={path}
-            className="flex items-center m-4 px-20 py-10 border rounded-md text-3xl transition-all hover:scale-110"
+            className="flex items-center m-4 px-10 py-5 border rounded-md text-2xl transition-all hover:scale-110"
         >
             <Icon />
             <span className="ml-10">{message}</span>
