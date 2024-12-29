@@ -8,6 +8,7 @@ interface AuthContextType {
     signup: (username: string, password: string) => Promise<void>;
     signout: () => void;
     upd: () => Promise<void>;
+    adminRequest: () => Promise<void>;
     loading: boolean;
 }
 
@@ -70,6 +71,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setLoading(false);
     };
 
+    const adminRequest = async () => {
+        await axios.post('/admin/request').catch((error) => {
+            console.error(error);
+        });
+    };
+
     const signout = () => {
         setUser(null);
         localStorage.removeItem(tokenKey);
@@ -84,6 +91,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 signout,
                 upd,
                 loading,
+                adminRequest,
             }}
         >
             {children}

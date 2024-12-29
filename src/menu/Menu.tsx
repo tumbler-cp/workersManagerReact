@@ -11,7 +11,7 @@ const Menu = () => {
         return null;
     }
 
-    const { user, signout } = authContext;
+    const { user, signout, adminRequest } = authContext;
 
     if (!user) {
         return null;
@@ -25,7 +25,7 @@ const Menu = () => {
         { path: '/workers', label: 'Сотрудники' },
     ];
 
-    if (user.role as Role == Role.ADMIN) {
+    if ((user.role as Role) == Role.ADMIN) {
         menuItems.push({ path: '/admin', label: 'Администрирование' });
     }
 
@@ -62,6 +62,16 @@ const Menu = () => {
                         <button className="px-4 py-1" onClick={signout}>
                             Sign Out
                         </button>
+                        {(user.role as Role) != Role.ADMIN ? (
+                            <button
+                                className="mx-2 px-4 py-1"
+                                onClick={adminRequest}
+                            >
+                                Потребовать права администратора
+                            </button>
+                        ) : (
+                            ''
+                        )}
                     </li>
                 )}
             </ul>

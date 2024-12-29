@@ -1,23 +1,23 @@
 export enum Color {
-    GREEN = "GREEN",
-    BLUE = "BLUE",
-    ORANGE = "ORANGE",
-    WHITE = "WHITE",
+    GREEN = 'GREEN',
+    BLUE = 'BLUE',
+    ORANGE = 'ORANGE',
+    WHITE = 'WHITE',
 }
 
 export enum Position {
-    MANAGER = "MANAGER",
-    LABORER = "LABORER",
-    HEAD_OF_DIVISION = "HEAD_OF_DIVISION",
-    LEAD_DEVELOPER = "LEAD_DEVELOPER",
-    BAKER = "BAKER",
+    MANAGER = 'MANAGER',
+    LABORER = 'LABORER',
+    HEAD_OF_DIVISION = 'HEAD_OF_DIVISION',
+    LEAD_DEVELOPER = 'LEAD_DEVELOPER',
+    BAKER = 'BAKER',
 }
 
 export enum Status {
-    HIRED = "HIRED",
-    FIRED = "FIRED",
-    RECOMMENDED_FOR_PROMOTION = "RECOMMENDED_FOR_PROMOTION",
-    PROBATION = "PROBATION", 
+    HIRED = 'HIRED',
+    FIRED = 'FIRED',
+    RECOMMENDED_FOR_PROMOTION = 'RECOMMENDED_FOR_PROMOTION',
+    PROBATION = 'PROBATION',
 }
 
 export type Location = {

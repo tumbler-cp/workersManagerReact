@@ -1,13 +1,13 @@
 export enum AdminRequestStatus {
-    ACCEPTED = "ACCEPTED",
-    REJECTED = "REJECTED",
-    PENDING = "PENDING",
+    ACCEPTED = 'ACCEPTED',
+    REJECTED = 'REJECTED',
+    PENDING = 'PENDING',
 }
 
 export enum ChangeType {
-    CREATION = "CREATION",
-    UPDATE = "UPDATE",
-    DELETION = "DELETION",
+    CREATION = 'CREATION',
+    UPDATE = 'UPDATE',
+    DELETION = 'DELETION',
 }
 
 export type AdminRequest = {
@@ -18,7 +18,7 @@ export type AdminRequest = {
 
 export type NewAdminRequest = {
     username: string;
-}
+};
 
 export type Log = {
     id: number;
@@ -28,4 +28,4 @@ export type Log = {
     workerId: number;
     time: string;
     changeType: ChangeType;
-}
+};

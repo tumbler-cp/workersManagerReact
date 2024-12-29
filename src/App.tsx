@@ -27,8 +27,7 @@ const App = () => {
     useEffect(() => {
         document.title = 'Loading...';
         console.log(user.role === Role.ADMIN);
-        console.log(user)
-        
+        console.log(user);
     }, []);
 
     return (
@@ -41,11 +40,14 @@ const App = () => {
                     <Route path="/persons" element={<Persons />} />
                     <Route path="/organizations" element={<Organizations />} />
                     <Route path="/workers" element={<Workers />} />
-                    {user.role as Role == Role.ADMIN && (
-                        <Route path="/admin" element={<AdminProvider>
-                            <Admin/>
-                            </AdminProvider>
-                            } 
+                    {(user.role as Role) == Role.ADMIN && (
+                        <Route
+                            path="/admin"
+                            element={
+                                <AdminProvider>
+                                    <Admin />
+                                </AdminProvider>
+                            }
                         />
                     )}
                 </Routes>
