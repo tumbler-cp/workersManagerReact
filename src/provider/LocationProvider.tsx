@@ -14,6 +14,7 @@ interface LocationContextInterface {
     newLocation: (location: NewLocation) => Promise<void>;
     updateLocation: (location: Location) => Promise<void>;
     deleteLocation: (id: number) => Promise<void>;
+    uploadLocationFile: (file: File) => Promise<void>;
 }
 
 export const LocationContext = createContext<
@@ -63,6 +64,17 @@ export const LocationProvider = ({
         axios.delete(`/location/delete?id=${id}`).then(() => {});
     };
 
+    const uploadLocationFile = async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        await axios.post('/location/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    };
+
     useEffect(() => {
         (async () => {
             await getPageLocations(0, 5, 'id,asc');
@@ -78,6 +90,7 @@ export const LocationProvider = ({
                 newLocation,
                 updateLocation,
                 deleteLocation,
+                uploadLocationFile,
             }}
         >
             {children}

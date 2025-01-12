@@ -88,6 +88,7 @@ const Locations = () => {
     const [selectedLocation, setSelectedLocation] = useState<Location | null>(
         null,
     );
+    const [file, setFile] = useState<File | null>(null);
 
     const locationKeys = ['id', 'x', 'y', 'name'];
 
@@ -98,7 +99,7 @@ const Locations = () => {
         return null;
     }
 
-    const { locationPage, getPageLocations } = locationContext;
+    const { locationPage, getPageLocations, uploadLocationFile } = locationContext;
     const { user } = authContext;
 
     if (!user) {
@@ -145,6 +146,19 @@ const Locations = () => {
     const handleUpdateRowClick = (location: Location) => {
         setSelectedLocation(location);
         setUpdLocationModal(true);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const handleUpload = async () => {
+        if (file) {
+            await uploadLocationFile(file);
+            setFile(null);
+        }
     };
 
     return (
@@ -216,6 +230,12 @@ const Locations = () => {
                     setSaveModalBool={setNewLocationModal}
                     onUpdateRowClick={handleUpdateRowClick}
                 />
+                <div className="my-4">
+                    <input type="file" onChange={handleFileChange} />
+                    <button onClick={handleUpload} className="ml-2">
+                        Upload File
+                    </button>
+                </div>
                 {newLocationModal && (
                     <NewLocationModal closeBoolSet={setNewLocationModal} />
                 )}
