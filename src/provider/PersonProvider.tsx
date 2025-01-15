@@ -10,6 +10,7 @@ interface PersonContextInterface {
     newPerson: (person: NewPerson) => Promise<void>;
     updatePerson: (person: Person) => Promise<void>;
     deletePerson: (id: number) => Promise<void>;
+    uploadPersonFile: (file: File) => Promise<void>;
 }
 
 export const PersonContext = createContext<PersonContextInterface | undefined>(
@@ -51,6 +52,17 @@ export const PersonProvider = ({ children }: { children: React.ReactNode }) => {
         axios.delete(`/person/delete?id=${id}`).then(() => {});
     };
 
+    const uploadPersonFile = async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        await axios.post('/person/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    };
+
     useEffect(() => {
         (async () => {
             await getPagePersons(0, 5, 'id,asc');
@@ -66,6 +78,7 @@ export const PersonProvider = ({ children }: { children: React.ReactNode }) => {
                 newPerson,
                 updatePerson,
                 deletePerson,
+                uploadPersonFile
             }}
         >
             {children}

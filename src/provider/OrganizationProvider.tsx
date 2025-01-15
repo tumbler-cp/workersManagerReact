@@ -14,6 +14,7 @@ interface OrganizationContextInterface {
     newOrganization: (organization: NewOrganization) => Promise<void>;
     updateOrganization: (organization: Organization) => Promise<void>;
     deleteOrganization: (id: number) => Promise<void>;
+    uploadOrganizationFile: (file: File) => Promise<void>;
 }
 
 export const OrganizationContext = createContext<
@@ -67,6 +68,17 @@ export const OrganizationProvider = ({
         axios.delete(`/organization/delete?id=${id}`).then(() => {});
     };
 
+    const uploadOrganizationFile = async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+    
+        await axios.post('/organization/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    };
+
     useEffect(() => {
         (async () => {
             await getPageOrganizations(0, 5, 'id,asc');
@@ -82,6 +94,7 @@ export const OrganizationProvider = ({
                 newOrganization,
                 updateOrganization,
                 deleteOrganization,
+                uploadOrganizationFile
             }}
         >
             {children}

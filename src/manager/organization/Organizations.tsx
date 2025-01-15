@@ -94,6 +94,8 @@ const Organizations = () => {
     const [selectedOrganization, setSelectedOrganization] =
         useState<Organization | null>(null);
 
+    const [file, setFile] = useState<File | null>(null);
+
     const organizationKeys = [
         'id',
         'zipCode',
@@ -110,7 +112,7 @@ const Organizations = () => {
         return null;
     }
 
-    const { organizationPage, getPageOrganizations } = organizationContext;
+    const { organizationPage, getPageOrganizations, uploadOrganizationFile } = organizationContext;
     const { user } = authContext;
 
     if (!user) {
@@ -158,6 +160,19 @@ const Organizations = () => {
         setSelectedOrganization(organization);
         setUpdOrganizationModal(true);
     };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const handleFileUpload = async () => {
+        if (file) {
+            await uploadOrganizationFile(file);
+            setFile(null);
+        }
+    }
 
     return (
         <div className="flex flex-col mx-auto my-auto">
@@ -230,6 +245,12 @@ const Organizations = () => {
                     setSaveModalBool={setNewOrganizationModal}
                     onUpdateRowClick={handleUpdateRowClick}
                 />
+                <div className='my-4'>
+                    <input type='file' onChange={handleFileChange}/>
+                    <button onClick={handleFileUpload} className='ml-2'>
+                        Upload File
+                    </button>
+                </div>
                 {newOrganizationModal && (
                     <NewOrganizationModal
                         closeBoolSet={setNewOrganizationModal}

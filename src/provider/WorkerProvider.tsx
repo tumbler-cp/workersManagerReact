@@ -10,6 +10,7 @@ interface WorkerContextInterface {
     newWorker: (worker: NewWorker) => Promise<void>;
     updateWorker: (worker: Worker) => Promise<void>;
     deleteWorker: (id: number) => Promise<void>;
+    uploadWorkerFile: (file: File) => Promise<void>;
 }
 
 export const WorkerContext = createContext<WorkerContextInterface | undefined>(
@@ -51,6 +52,17 @@ export const WorkerProvider = ({ children }: { children: React.ReactNode }) => {
         axios.delete(`/worker/delete?id=${id}`).then(() => {});
     };
 
+    const uploadWorkerFile = async (file: File) => {
+        const formData = new FormData();
+        formData.append('file', file);
+
+        await axios.post('/worker/upload', formData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        });
+    }
+
     useEffect(() => {
         (async () => {
             await getPageWorkers(0, 5, 'id,asc');
@@ -66,6 +78,7 @@ export const WorkerProvider = ({ children }: { children: React.ReactNode }) => {
                 newWorker,
                 updateWorker,
                 deleteWorker,
+                uploadWorkerFile
             }}
         >
             {children}
