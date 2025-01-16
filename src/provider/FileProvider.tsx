@@ -9,6 +9,7 @@ import { WorkerContext } from './WorkerProvider';
 interface FileContextInterface {
     fileList: FileLog[];
     getAllFiles: () => Promise<void>;
+    downloadFile: (name: string) => Promise<void>;
 }
 
 export const FileContext = createContext<FileContextInterface | undefined>(
@@ -41,10 +42,31 @@ export const FileProvider = ({ children }: { children: React.ReactNode }) => {
     const { workerPage } = workerContext;
 
     const getAllFiles = async () => {
-        await axios.get('/file_log/mine').then((response) => {
+        await axios.get('/file/logs').then((response) => {
             setFileList(response.data);
             console.log(response.data);
         });
+    };
+
+    const downloadFile = async (name: string) => {
+        try {
+            const response = await axios.get(`/file/download/${name}`, {
+                responseType: 'blob',
+            });
+
+            const blob = response.data;
+            const link = document.createElement('a');
+
+            const fileName = name;
+
+            link.href = URL.createObjectURL(blob);
+            link.download = fileName;
+
+            link.click();
+            URL.revokeObjectURL(link.href);
+        } catch (error) {
+            console.error('Error downloading the file', error);
+        }
     };
 
     useEffect(() => {
@@ -54,7 +76,7 @@ export const FileProvider = ({ children }: { children: React.ReactNode }) => {
     }, [locationPage, organizationPage, personPage, workerPage]);
 
     return (
-        <FileContext.Provider value={{ fileList, getAllFiles }}>
+        <FileContext.Provider value={{ fileList, getAllFiles, downloadFile }}>
             {children}
         </FileContext.Provider>
     );

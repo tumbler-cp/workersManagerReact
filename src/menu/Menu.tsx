@@ -32,7 +32,7 @@ const Menu = () => {
 
     return (
         <nav>
-            <ul className="flex flex-row py-5 px-5 border-b border-gray-700">
+            <ul className="flex flex-row py-5 px-5 border-b border-gray-700 overflow-scroll">
                 {menuItems.map((item) => (
                     <li key={item.path} className="mx-4 my-auto">
                         <Link

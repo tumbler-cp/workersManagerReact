@@ -93,6 +93,8 @@ const Persons = () => {
     const [updPersonModal, setUpdPersonModal] = useState<boolean>(false);
     const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
 
+    const [file, setFile] = useState<File | null>(null);
+
     const personKeys = [
         'id',
         'eyeColor',
@@ -110,7 +112,7 @@ const Persons = () => {
         return null;
     }
 
-    const { personPage, getPagePersons } = personContext;
+    const { personPage, getPagePersons, uploadPersonFile } = personContext;
     const { user } = authContext;
 
     if (!user) {
@@ -157,6 +159,19 @@ const Persons = () => {
     const handleUpdateRowClick = (person: Person) => {
         setSelectedPerson({ ...person });
         setUpdPersonModal(true);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const handleUpload = async () => {
+        if (file) {
+            await uploadPersonFile(file);
+            setFile(null);
+        }
     };
 
     return (
@@ -228,6 +243,12 @@ const Persons = () => {
                     setSaveModalBool={setNewPersonModal}
                     onUpdateRowClick={handleUpdateRowClick}
                 />
+                <div className="my-4">
+                    <input type="file" onChange={handleFileChange} />
+                    <button onClick={handleUpload} className="ml-2">
+                        Upload File
+                    </button>
+                </div>
                 {newPersonModal && (
                     <NewPersonModal closeBoolSet={setNewPersonModal} />
                 )}

@@ -102,6 +102,8 @@ const Workers = () => {
     const [updWorkerModal, setUpdWorkerModal] = useState<boolean>(false);
     const [selectedWorker, setSelectedWorker] = useState<Worker | null>(null);
 
+    const [file, setFile] = useState<File | null>(null);
+
     const workerKeys = [
         'id',
         'name',
@@ -122,7 +124,7 @@ const Workers = () => {
         return null;
     }
 
-    const { workerPage, getPageWorkers } = workerContext;
+    const { workerPage, getPageWorkers, uploadWorkerFile } = workerContext;
     const { user } = authContext;
 
     if (!user) {
@@ -169,6 +171,19 @@ const Workers = () => {
     const handleUpdateRowClick = (worker: Worker) => {
         setSelectedWorker(worker);
         setUpdWorkerModal(true);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files) {
+            setFile(e.target.files[0]);
+        }
+    };
+
+    const handleUpload = async () => {
+        if (file) {
+            await uploadWorkerFile(file);
+            setFile(null);
+        }
     };
 
     return (
@@ -242,6 +257,12 @@ const Workers = () => {
                     setSaveModalBool={setNewWorkerModal}
                     onUpdateRowClick={handleUpdateRowClick}
                 />
+                <div className="my-4">
+                    <input type="file" onChange={handleFileChange} />
+                    <button onClick={handleUpload} className="ml-2">
+                        Upload File
+                    </button>
+                </div>
                 {newWorkerModal && (
                     <NewWorkerModal closeBoolSet={setNewWorkerModal} />
                 )}
