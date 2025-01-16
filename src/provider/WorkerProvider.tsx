@@ -61,7 +61,7 @@ export const WorkerProvider = ({ children }: { children: React.ReactNode }) => {
                 'Content-Type': 'multipart/form-data',
             },
         });
-    }
+    };
 
     useEffect(() => {
         (async () => {
@@ -78,7 +78,7 @@ export const WorkerProvider = ({ children }: { children: React.ReactNode }) => {
                 newWorker,
                 updateWorker,
                 deleteWorker,
-                uploadWorkerFile
+                uploadWorkerFile,
             }}
         >
             {children}

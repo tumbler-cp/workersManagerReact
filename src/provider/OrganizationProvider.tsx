@@ -71,7 +71,7 @@ export const OrganizationProvider = ({
     const uploadOrganizationFile = async (file: File) => {
         const formData = new FormData();
         formData.append('file', file);
-    
+
         await axios.post('/organization/upload', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -94,7 +94,7 @@ export const OrganizationProvider = ({
                 newOrganization,
                 updateOrganization,
                 deleteOrganization,
-                uploadOrganizationFile
+                uploadOrganizationFile,
             }}
         >
             {children}

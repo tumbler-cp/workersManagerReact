@@ -10,6 +10,7 @@ import { LocationProvider } from './provider/LocationProvider.tsx';
 import { PersonProvider } from './provider/PersonProvider.tsx';
 import { OrganizationProvider } from './provider/OrganizationProvider.tsx';
 import { WorkerProvider } from './provider/WorkerProvider.tsx';
+import { FileProvider } from './provider/FileProvider.tsx';
 
 const root = document.getElementById('root');
 
@@ -21,22 +22,24 @@ if (root) {
                 <PersonProvider>
                     <OrganizationProvider>
                         <WorkerProvider>
-                            <BrowserRouter>
-                                <Routes>
-                                    <Route
-                                        path="*"
-                                        element={
-                                            <AuthGuard>
-                                                <App />
-                                            </AuthGuard>
-                                        }
-                                    />
-                                    <Route
-                                        path="/auth"
-                                        element={<AuthPage />}
-                                    />
-                                </Routes>
-                            </BrowserRouter>
+                            <FileProvider>
+                                <BrowserRouter>
+                                    <Routes>
+                                        <Route
+                                            path="*"
+                                            element={
+                                                <AuthGuard>
+                                                    <App />
+                                                </AuthGuard>
+                                            }
+                                        />
+                                        <Route
+                                            path="/auth"
+                                            element={<AuthPage />}
+                                        />
+                                    </Routes>
+                                </BrowserRouter>
+                            </FileProvider>
                         </WorkerProvider>
                     </OrganizationProvider>
                 </PersonProvider>

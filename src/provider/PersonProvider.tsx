@@ -55,7 +55,7 @@ export const PersonProvider = ({ children }: { children: React.ReactNode }) => {
     const uploadPersonFile = async (file: File) => {
         const formData = new FormData();
         formData.append('file', file);
-    
+
         await axios.post('/person/upload', formData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
@@ -78,7 +78,7 @@ export const PersonProvider = ({ children }: { children: React.ReactNode }) => {
                 newPerson,
                 updatePerson,
                 deletePerson,
-                uploadPersonFile
+                uploadPersonFile,
             }}
         >
             {children}

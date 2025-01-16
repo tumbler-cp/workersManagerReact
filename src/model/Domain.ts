@@ -1,3 +1,5 @@
+import { User } from './Auth';
+
 export enum Color {
     GREEN = 'GREEN',
     BLUE = 'BLUE',
@@ -70,4 +72,13 @@ export type Worker = {
     personId: number;
     ownerId: number;
     isEditableByAdmin: boolean;
+};
+
+export type FileLog = {
+    id: number;
+    fileName: string;
+    className: string;
+    quantity: number;
+    timestamp: string;
+    owner: User;
 };

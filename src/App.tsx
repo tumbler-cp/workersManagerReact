@@ -10,6 +10,7 @@ import { AuthContext } from './provider/AuthProvider';
 import { Role } from './model/Auth';
 import { AdminProvider } from './provider/AdminProvider';
 import Admin from './admin/Admin';
+import Files from './manager/file/Files';
 
 const App = () => {
     const authContext = useContext(AuthContext);
@@ -40,6 +41,7 @@ const App = () => {
                     <Route path="/persons" element={<Persons />} />
                     <Route path="/organizations" element={<Organizations />} />
                     <Route path="/workers" element={<Workers />} />
+                    <Route path="/files" element={<Files />} />
                     {(user.role as Role) == Role.ADMIN && (
                         <Route
                             path="/admin"

@@ -23,6 +23,7 @@ const Menu = () => {
         { path: '/persons', label: 'Личности' },
         { path: '/organizations', label: 'Организации' },
         { path: '/workers', label: 'Сотрудники' },
+        { path: '/files', label: 'Файлы' },
     ];
 
     if ((user.role as Role) == Role.ADMIN) {
