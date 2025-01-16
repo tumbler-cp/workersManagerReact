@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import { FileLog } from '../../model/Domain';
 import { FileContext } from '../../provider/FileProvider';
 import { FaFileAlt } from 'react-icons/fa';
+import { FaDownload } from 'react-icons/fa6';
 
 const FileLogElement = ({ log }: { log: FileLog }) => {
     return (
@@ -28,13 +29,13 @@ const FileLogElement = ({ log }: { log: FileLog }) => {
                     <p className="text-white">{log.timestamp}</p>
                 </div>
             </div>
-            {/* <div className="flex p-5">
+            <div className="flex p-5">
                 <FaDownload
                     className="ml-auto my-auto"
                     color="white"
                     size={50}
                 />
-            </div> */}
+            </div>
         </div>
     );
 };
