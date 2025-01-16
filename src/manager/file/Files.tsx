@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react';
 import { FileLog } from '../../model/Domain';
 import { FileContext } from '../../provider/FileProvider';
 import { FaFileAlt } from 'react-icons/fa';
-import { FaDownload } from 'react-icons/fa6';
 
 const FileLogElement = ({ log }: { log: FileLog }) => {
     return (
